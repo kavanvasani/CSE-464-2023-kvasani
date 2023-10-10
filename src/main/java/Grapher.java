@@ -14,6 +14,8 @@ import java.util.Set;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Grapher {
@@ -77,6 +79,33 @@ public class Grapher {
         }
     }
 
+    private static Set<String> vertexSet = new HashSet<>();
+
+
+    public static void addNode(String label) throws Exception {
+        if (!vertexSet.contains(label)) {
+            try {
+                vertexSet.add(label);
+                graph.addVertex(label);
+                System.out.println("Node added: " + label);
+            } catch (Exception e) {
+                throw new Exception("Error while adding node", e);
+            }
+        } else {
+            System.out.println("Node already exists: " + label);
+        }
+    }
+
+    public static void addNodes(String[] labels) {
+        for (String label : labels) {
+            try {
+                addNode(label);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         parseGraph("src/main/resources/test1.dot");
         System.out.println(toGraphString());
@@ -85,6 +114,9 @@ public class Grapher {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        addNodes(new String[]{"D", "E"});
+        System.out.println(toGraphString());
     }
 
 }
