@@ -3,11 +3,17 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.nio.ImportException;
-import org.jgrapht.nio.dot.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.StringReader;
+import java.nio.file.Paths;
+import java.util.Set;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Grapher {
@@ -27,8 +33,10 @@ public class Grapher {
             return Files.readString(Path.of(filePath));
         }
 
+        private static Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+
         private static Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
-            Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+
             DOTImporter<String, DefaultEdge> dotImporter = null;
             dotImporter = new DOTImporter<>();
             dotImporter.setVertexFactory(label -> label);
@@ -37,8 +45,46 @@ public class Grapher {
             return graph;
         }
 
+
+    public static String toGraphString() {
+        StringBuilder output = new StringBuilder();
+
+        int numberOfNodes = graph.vertexSet().size();
+        int numberOfEdges = graph.edgeSet().size();
+
+        output.append("The number of nodes are: ").append(numberOfNodes).append("\n");
+        output.append("The node labels are: \n");
+        for (String elem : graph.vertexSet()) {
+            output.append(elem).append("\n");
+        }
+        output.append("The number of edges are: ").append(numberOfEdges).append("\n");
+        output.append("The nodes with the direction of edges: \n");
+
+        for (DefaultEdge edge : graph.edgeSet()) {
+            String source = graph.getEdgeSource(edge).toString();
+            String target = graph.getEdgeTarget(edge).toString();
+            output.append(source).append(" -> ").append(target).append("\n");
+        }
+        return output.toString();
+    }
+
+    public static void writeToFile(String content, String filePath) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(content);
+            System.out.println("Successfully wrote content to " + filePath);
+        } catch (IOException e) {
+            throw new IOException("Unable to write content to file: " + filePath, e);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         parseGraph("src/main/resources/test1.dot");
+        System.out.println(toGraphString());
+        try {
+            writeToFile(toGraphString(),"src/main/resources/test1.txt" );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
