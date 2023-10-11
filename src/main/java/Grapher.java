@@ -21,10 +21,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.util.mxCellRenderer;
+import org.jgrapht.ext.JGraphXAdapter;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 
 public class Grapher {
 
+        private static Map<String, Set<String>> adjacencyMap = new HashMap<>();
 
         public static Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
             try {
@@ -112,9 +127,10 @@ public class Grapher {
     }
 
     private static Set<String> EdgesSet = new HashSet<>();
-    private static Map<String, Set<String>> adjacencyMap = new HashMap<>();
+
 
     public static boolean addEdge(String srcLabel, String dstLabel) throws Exception {
+
         if (adjacencyMap.containsKey(srcLabel) && adjacencyMap.get(srcLabel).contains(dstLabel)) {
             return false; // Edge already exists
         } else {
@@ -135,7 +151,66 @@ public class Grapher {
                 throw new Exception("Error while adding edge", e);
             }
         }
+    }// Your graph representation
+
+    public static void outputDOTGraph(String filePath) throws Exception {
+        for (DefaultEdge edge : graph.edgeSet()) {
+            String source = graph.getEdgeSource(edge).toString();
+            String target = graph.getEdgeTarget(edge).toString();
+            if (!EdgesSet.contains(source)) {
+                adjacencyMap.put(source, new HashSet<>());
+            }
+            if (!vertexSet.contains(target)) {
+                adjacencyMap.put(target, new HashSet<>());
+            }
+            adjacencyMap.get(source).add(target);
+        }
+        StringBuilder dotString = new StringBuilder();
+        dotString.append("digraph G {\n");
+
+        for (Map.Entry<String, Set<String>> entry : adjacencyMap.entrySet()) {
+            String srcNode = entry.getKey();
+            System.out.println(srcNode);
+            Set<String> neighbors = entry.getValue();
+            System.out.println(neighbors);
+            for (String dstNode : neighbors) {
+                dotString.append("  ").append(srcNode).append(" -> ").append(dstNode).append(";\n");
+            }
+        }
+        dotString.append("}\n");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(dotString.toString());
+            System.out.println("Successfully exported graph to DOT file: " + filePath);
+        } catch (IOException e) {
+            throw new IOException("Error while exporting to DOT graph", e);
+        }
     }
+
+
+
+//    private static org.jgrapht.Graph<String, DefaultEdge> graph; // Your graph representation
+
+    public static void outputGraphics(String filePath) throws Exception {
+        JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<>(graph);
+        mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
+        try {
+            layout.execute(graphAdapter.getDefaultParent());
+        } catch (Exception e) {
+            throw new Exception("Error while converting graph to image", e);
+        }
+
+        BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+        File imgFile = new File(filePath);
+        try {
+            ImageIO.write(image, "PNG", imgFile);
+            System.out.println("Successfully exported graph to image: " + filePath);
+        } catch (IOException e) {
+            throw new Exception("Error while writing image to file", e);
+        }
+    }
+
+
     public static void main(String[] args) throws Exception {
         parseGraph("src/main/resources/test1.dot");
         System.out.println(toGraphString());
@@ -150,6 +225,12 @@ public class Grapher {
 
         addEdge("D","A");
         System.out.println(toGraphString());
+        outputDOTGraph("src/main/resources/test_dot.dot");
+        try {
+            outputGraphics("/Users/kavanvasani/Downloads/cse464/CSE-464-2023-kvasani-asu.edu/src/main/resources/graph.png");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
