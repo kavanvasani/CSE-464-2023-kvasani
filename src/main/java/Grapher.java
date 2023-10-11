@@ -11,6 +11,11 @@ import java.io.StringReader;
 import java.nio.file.Paths;
 import java.util.Set;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -106,6 +111,31 @@ public class Grapher {
         }
     }
 
+    private static Set<String> EdgesSet = new HashSet<>();
+    private static Map<String, Set<String>> adjacencyMap = new HashMap<>();
+
+    public static boolean addEdge(String srcLabel, String dstLabel) throws Exception {
+        if (adjacencyMap.containsKey(srcLabel) && adjacencyMap.get(srcLabel).contains(dstLabel)) {
+            return false; // Edge already exists
+        } else {
+            try {
+                if (!EdgesSet.contains(srcLabel)) {
+                    EdgesSet.add(srcLabel);
+                    adjacencyMap.put(srcLabel, new HashSet<>());
+                }
+                if (!vertexSet.contains(dstLabel)) {
+                    vertexSet.add(dstLabel);
+                    adjacencyMap.put(dstLabel, new HashSet<>());
+                }
+
+                adjacencyMap.get(srcLabel).add(dstLabel);
+                graph.addEdge(srcLabel, dstLabel);
+                return true;
+            } catch (Exception e) {
+                throw new Exception("Error while adding edge", e);
+            }
+        }
+    }
     public static void main(String[] args) throws Exception {
         parseGraph("src/main/resources/test1.dot");
         System.out.println(toGraphString());
@@ -116,6 +146,9 @@ public class Grapher {
         }
 
         addNodes(new String[]{"D", "E"});
+        System.out.println(toGraphString());
+
+        addEdge("D","A");
         System.out.println(toGraphString());
     }
 
