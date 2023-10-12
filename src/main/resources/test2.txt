@@ -1,0 +1,10 @@
+The number of nodes are: 3
+The node labels are: 
+A
+B
+C
+The number of edges are: 3
+The nodes with the direction of edges: 
+A -> B
+B -> C
+C -> A

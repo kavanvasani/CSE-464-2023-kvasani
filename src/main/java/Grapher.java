@@ -39,9 +39,9 @@ import java.io.IOException;
 
 public class Grapher {
 
-        private static Map<String, Set<String>> adjacencyMap = new HashMap<>();
+        private Map<String, Set<String>> adjacencyMap = new HashMap<>();
 
-        public static Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
+        public Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
             try {
                 String fileContent = readDotFile(filePath);
                 return createGraphFromString(fileContent);
@@ -51,13 +51,13 @@ public class Grapher {
 
         }
 
-        private static String readDotFile(String filePath) throws IOException {
+        private String readDotFile(String filePath) throws IOException {
             return Files.readString(Path.of(filePath));
         }
 
-        private static Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        private Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 
-        private static Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
+        private Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
 
             DOTImporter<String, DefaultEdge> dotImporter = null;
             dotImporter = new DOTImporter<>();
@@ -67,8 +67,8 @@ public class Grapher {
             return graph;
         }
 
-
-    public static String toGraphString() {
+    @Override
+    public String toString() {
         StringBuilder output = new StringBuilder();
 
         int numberOfNodes = graph.vertexSet().size();
@@ -90,7 +90,8 @@ public class Grapher {
         return output.toString();
     }
 
-    public static void writeToFile(String content, String filePath) throws IOException {
+    public void writeToFile(String filePath) throws IOException {
+            String content = toString();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write(content);
             System.out.println("Successfully wrote content to " + filePath);
@@ -99,10 +100,10 @@ public class Grapher {
         }
     }
 
-    private static Set<String> vertexSet = new HashSet<>();
+    private Set<String> vertexSet = new HashSet<>();
 
 
-    public static void addNode(String label) throws Exception {
+    public void addNode(String label) throws Exception {
         if (!vertexSet.contains(label)) {
             try {
                 vertexSet.add(label);
@@ -116,7 +117,7 @@ public class Grapher {
         }
     }
 
-    public static void addNodes(String[] labels) {
+    public void addNodes(String[] labels) {
         for (String label : labels) {
             try {
                 addNode(label);
@@ -126,13 +127,13 @@ public class Grapher {
         }
     }
 
-    private static Set<String> EdgesSet = new HashSet<>();
+    private Set<String> EdgesSet = new HashSet<>();
 
 
-    public static boolean addEdge(String srcLabel, String dstLabel) throws Exception {
+    public boolean addEdge(String srcLabel, String dstLabel) throws Exception {
 
         if (adjacencyMap.containsKey(srcLabel) && adjacencyMap.get(srcLabel).contains(dstLabel)) {
-            return false; // Edge already exists
+            return false;
         } else {
             try {
                 if (!EdgesSet.contains(srcLabel)) {
@@ -151,9 +152,9 @@ public class Grapher {
                 throw new Exception("Error while adding edge", e);
             }
         }
-    }// Your graph representation
+    }
 
-    public static void outputDOTGraph(String filePath) throws Exception {
+    public void outputDOTGraph(String filePath) throws Exception {
         for (DefaultEdge edge : graph.edgeSet()) {
             String source = graph.getEdgeSource(edge).toString();
             String target = graph.getEdgeTarget(edge).toString();
@@ -191,7 +192,7 @@ public class Grapher {
 
 //    private static org.jgrapht.Graph<String, DefaultEdge> graph; // Your graph representation
 
-    public static void outputGraphics(String filePath) throws Exception {
+    public void outputGraphics(String filePath) throws Exception {
         JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<>(graph);
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         try {
@@ -211,26 +212,26 @@ public class Grapher {
     }
 
 
-    public static void main(String[] args) throws Exception {
-        parseGraph("src/main/resources/test1.dot");
-        System.out.println(toGraphString());
-        try {
-            writeToFile(toGraphString(),"src/main/resources/test1.txt" );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        addNodes(new String[]{"D", "E"});
-        System.out.println(toGraphString());
-
-        addEdge("D","A");
-        System.out.println(toGraphString());
-        outputDOTGraph("src/main/resources/test_dot.dot");
-        try {
-            outputGraphics("/Users/kavanvasani/Downloads/cse464/CSE-464-2023-kvasani-asu.edu/src/main/resources/graph.png");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) throws Exception {
+//        parseGraph("src/main/resources/test1.dot");
+//        System.out.println(toString());
+//        try {
+//            writeToFile(toString(),"src/main/resources/test1.txt" );
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        addNodes(new String[]{"D", "E"});
+//        System.out.println(toGraphString());
+//
+//        addEdge("D","A");
+//        System.out.println(toGraphString());
+//        outputDOTGraph("src/main/resources/test_dot.dot");
+//        try {
+//            outputGraphics("/Users/kavanvasani/Downloads/cse464/CSE-464-2023-kvasani-asu.edu/src/main/resources/graph.png");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 }
