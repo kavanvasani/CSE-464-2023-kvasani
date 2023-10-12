@@ -78,25 +78,25 @@ This Java application, **Grapher**, allows you to parse, manipulate, and visuali
 ### Screenshots
 
 - **Parsed Graph Information:**
-  ![Parsed Graph Information](Screenshot 2023-10-11 at 7.12.52 PM.png)
+  ![Parsed Graph Information](src/outputs/Screenshot 2023-10-11 at 7.12.52 PM.png)
 
 - **Exported Graph (DOT Format):**
-  ![Exported DOT Graph](Screenshot 2023-10-11 at 7.13.08 PM.png)
+  ![Exported DOT Graph](src/outputs/Screenshot 2023-10-11 at 7.13.08 PM.png)
 
 - **Exported Graph (Image):**
-  ![Exported Graph Image](Screenshot 2023-10-11 at 7.13.38 PM.png)
+  ![Exported Graph Image](src/outputs/Screenshot 2023-10-11 at 7.13.38 PM.png)
 - **Exported Graph (Image):**
 - ![Output Graph](src/main/resources/test_output.png)
 - **Output to String:**
-- ![Output to String](Screenshot 2023-10-11 at 7.13.30 PM.png)
+- ![Output to String](src/outputs/Screenshot 2023-10-11 at 7.13.30 PM.png)
 - **Adding list of nodes:**
-- ![Adding list of nodes](Screenshot 2023-10-11 at 7.13.34 PM.png)
+- ![Adding list of nodes](src/outputs/Screenshot 2023-10-11 at 7.13.34 PM.png)
 - **Added Edges:**
-  ![Added edges](Screenshot 2023-10-11 at 7.13.19 PM.png)
+  ![Added edges](src/outputs/Screenshot 2023-10-11 at 7.13.19 PM.png)
 - **Added Node:**
-  ![Added nodes](Screenshot 2023-10-11 at 7.13.25 PM.png)
+  ![Added nodes](src/outputs/Screenshot 2023-10-11 at 7.13.25 PM.png)
 -  **Write Graph to text file:**
-  ![Write Graph to text file](Screenshot 2023-10-11 at 7.13.43 PM.png)
+  ![Write Graph to text file](src/outputs/Screenshot 2023-10-11 at 7.13.43 PM.png)
 ### Commits
 
 - [Initial commit](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/09986fa52b53e2495035a9ea8c13edbffee8f4fa)
