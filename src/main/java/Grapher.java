@@ -39,9 +39,9 @@ import java.io.IOException;
 
 public class Grapher {
 
-        private Map<String, Set<String>> adjacencyMap = new HashMap<>();
+    private final Map<String, Set<String>> adjacencyMap = new HashMap<>();
 
-        public Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
+    public Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
             try {
                 String fileContent = readDotFile(filePath);
                 return createGraphFromString(fileContent);
@@ -55,7 +55,7 @@ public class Grapher {
             return Files.readString(Path.of(filePath));
         }
 
-        private Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        private final Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 
         private Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
 
@@ -211,8 +211,48 @@ public class Grapher {
         }
     }
 
+    public boolean removeNode(String label) {
+        if (graph.containsVertex(label)) {
+            System.out.println("Node present in graph");
+                graph.removeVertex(label);
+                return true;
+        }
+            System.out.println("Node not present in graph");
+            return false;
+    }
+
+
+    public boolean removeNodes(String[] labels) {
+        boolean res = true;
+        for (String label : labels) {
+            if (!removeNode(label)) {
+                res = false;
+            }
+
+        }
+        return res;
+    }
+
+    public boolean removeEdge(String srcLabel, String dstLabel) throws Exception {
+        try {
+            if (graph.containsEdge(srcLabel, dstLabel)) {
+                graph.removeEdge(srcLabel, dstLabel);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            throw new Exception("Error while removing edge", e);
+        }
+
+    }
+
+
+
 
 //    public static void main(String[] args) throws Exception {
+
+
 //        parseGraph("src/main/resources/test1.dot");
 //        System.out.println(toString());
 //        try {
@@ -225,7 +265,7 @@ public class Grapher {
 //        System.out.println(toGraphString());
 //
 //        addEdge("D","A");
-//        System.out.println(toGraphString());
+//        System.out.println(toString());
 //        outputDOTGraph("src/main/resources/test_dot.dot");
 //        try {
 //            outputGraphics("/Users/kavanvasani/Downloads/cse464/CSE-464-2023-kvasani-asu.edu/src/main/resources/graph.png");
