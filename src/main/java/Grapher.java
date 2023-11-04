@@ -10,7 +10,9 @@ import java.nio.file.Path;
 import java.io.StringReader;
 import java.nio.file.Paths;
 import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class Grapher {
         }
 
         private String readDotFile(String filePath) throws IOException {
-            return Files.readString(Path.of(filePath));
+            return Files.readString(Paths.get(filePath));
         }
 
         private final Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -246,6 +248,64 @@ public class Grapher {
         }
 
     }
+    public class Path {
+        private List<String> nodes;
+
+        public Path() {
+            nodes = new ArrayList<>();
+        }
+
+        public void addNode(String node) {
+            nodes.add(node);
+        }
+
+        public List<String> getNodes() {
+            return nodes;
+        }
+    }
+    public Path graphSearch(String srcLabel, String dstLabel) {
+        boolean[] visited = new boolean[vertexSet.size()];
+        Stack<String> stack = new Stack<>();
+        Path path = new Path();
+        stack.push(srcLabel);
+
+        while (!stack.isEmpty()) {
+            String current = stack.pop();
+            path.addNode(current);
+
+            if (current.equals(dstLabel)) {
+                return path;
+            }
+
+            int currentIndex = getNodeIndex(current);
+            visited[currentIndex] = true;
+
+            for (String neighbor : adjacencyMap.get(current)) {
+                int neighborIndex = getNodeIndex(neighbor);
+                if (!visited[neighborIndex]) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private int getNodeIndex(String label) {
+        int index = 0;
+        for (String node : vertexSet) {
+            if (node.equals(label)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+
+}
+
+
 
 
 
@@ -274,4 +334,3 @@ public class Grapher {
 //        }
 //    }
 
-}

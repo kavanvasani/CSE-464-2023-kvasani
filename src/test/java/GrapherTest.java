@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -243,6 +244,33 @@ class GrapherTest {
         assertTrue(grapher.removeEdge("D", "E"));
         System.out.println(grapher.toString());
         assertFalse(grapher.removeEdge("D", "E"));
+    }
+
+    @Test
+    public void testGraphSearch() throws Exception {
+        Grapher grapher = new Grapher();
+        grapher.addNode("A");
+        grapher.addNode("B");
+        grapher.addNode("C");
+        grapher.addEdge("A", "B");
+        grapher.addEdge("B", "C");
+        grapher.addEdge("C", "A");
+
+        Grapher.Path validPath = grapher.graphSearch("A", "C");
+        assertNotNull(validPath);
+        assertEquals(List.of("A", "B", "C"), validPath.getNodes());
+
+        Grapher.Path invalidPath = grapher.graphSearch("C", "D");
+        assertNull(invalidPath);
+
+        grapher.addEdge("A", "A");
+        grapher.addEdge("C", "C");
+        Grapher.Path pathWithLoops = grapher.graphSearch("A", "A");
+        assertNotNull(pathWithLoops);
+        assertNotEquals(List.of("A", "A"), pathWithLoops.getNodes());
+        grapher.addNode("D");
+        Grapher.Path disconnectedPath = grapher.graphSearch("A", "D");
+        assertNull(disconnectedPath);
     }
 }
 
