@@ -3,17 +3,16 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.nio.ImportException;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.StringReader;
 import java.nio.file.Paths;
-import java.util.Set;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.Set;
 
 import java.io.BufferedWriter;
@@ -30,14 +29,24 @@ import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.ext.JGraphXAdapter;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 public class Grapher {
+
+
+
+
 
     private final Map<String, Set<String>> adjacencyMap = new HashMap<>();
 
@@ -52,7 +61,7 @@ public class Grapher {
         }
 
         private String readDotFile(String filePath) throws IOException {
-            return Files.readString(Path.of(filePath));
+            return Files.readString(Paths.get(filePath));
         }
 
         private final Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -245,6 +254,67 @@ public class Grapher {
             throw new Exception("Error while removing edge", e);
         }
 
+
+        }
+
+    public static class Path {
+        private List<String> nodes;
+
+        public Path() {
+            this.nodes = new ArrayList<>();
+        }
+
+        public void addNode(String node) {
+            nodes.add(node);
+        }
+
+        public List<String> getNodes() {
+            return nodes;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder pathString = new StringBuilder();
+            for (String node : nodes) {
+                pathString.append(node).append(" -> ");
+            }
+            if (pathString.length() > 4) {
+                pathString.setLength(pathString.length() - 4); // Remove the last " -> "
+            }
+            return pathString.toString();
+        }
+    }
+    public Path graphSearch(String srcLabel, String dstLabel) {
+        Set<String> visited = new HashSet<>();
+        Queue<Path> queue = new LinkedList<>();
+        Path initialPath = new Path();
+        initialPath.addNode(srcLabel);
+        queue.offer(initialPath);
+
+        while (!queue.isEmpty()) {
+            Path currentPath = queue.poll();
+            String currentNode = currentPath.getNodes().get(currentPath.getNodes().size() - 1);
+
+            if (currentNode.equals(dstLabel)) {
+                return currentPath;
+            }
+
+            if (!visited.contains(currentNode)) {
+                visited.add(currentNode);
+                for (DefaultEdge edge : graph.outgoingEdgesOf(currentNode)) {
+                    String neighbor = graph.getEdgeTarget(edge);
+                    if (!visited.contains(neighbor)) {
+                        Path newPath = new Path();
+                        newPath.getNodes().addAll(currentPath.getNodes());
+                        newPath.addNode(neighbor);
+                        queue.offer(newPath);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
     }
 
 
@@ -274,4 +344,4 @@ public class Grapher {
 //        }
 //    }
 
-}
+

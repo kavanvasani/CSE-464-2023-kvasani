@@ -244,6 +244,27 @@ class GrapherTest {
         System.out.println(grapher.toString());
         assertFalse(grapher.removeEdge("D", "E"));
     }
+
+    @Test
+    public void testGraphSearch() throws Exception {
+        Grapher grapher = new Grapher();
+        grapher.parseGraph("src/main/resources/test1.dot");
+        grapher.addNode("D");
+        grapher.addNode("E");
+        grapher.addEdge("A", "D");
+        grapher.addEdge("D", "E");
+
+        Grapher.Path path1 = grapher.graphSearch("A", "E");
+        assertNotNull(path1);
+        assertEquals("A -> D -> E", path1.toString());
+        Grapher.Path path2 = grapher.graphSearch("A", "A");
+        assertNotNull(path2);
+        assertNotEquals("A -> B -> C -> A", path2.toString());
+
+        Grapher.Path path3 = grapher.graphSearch("A", "Z");
+        assertNull(path3);
+    }
+
 }
 
 
