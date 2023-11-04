@@ -12,7 +12,17 @@ import java.nio.file.Path;
 import java.io.StringReader;
 import java.nio.file.Paths;
 
+
 import java.util.*;
+
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import java.util.Set;
 
 import java.io.BufferedWriter;
@@ -29,6 +39,9 @@ import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.ext.JGraphXAdapter;
+import org.jgrapht.traverse.BreadthFirstIterator;
+import org.jgrapht.traverse.DepthFirstIterator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
@@ -257,34 +270,10 @@ public class Grapher {
 
         }
 
-    public static class Path {
-        private List<String> nodes;
 
-        public Path() {
-            this.nodes = new ArrayList<>();
-        }
 
-        public void addNode(String node) {
-            nodes.add(node);
-        }
 
-        public List<String> getNodes() {
-            return nodes;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder pathString = new StringBuilder();
-            for (String node : nodes) {
-                pathString.append(node).append(" -> ");
-            }
-            if (pathString.length() > 4) {
-                pathString.setLength(pathString.length() - 4); // Remove the last " -> "
-            }
-            return pathString.toString();
-        }
-    }
-    public Path graphSearch(String srcLabel, String dstLabel) {
+    public Path graphSearchBFS(String srcLabel, String dstLabel) {
         Set<String> visited = new HashSet<>();
         Queue<Path> queue = new LinkedList<>();
         Path initialPath = new Path();
@@ -315,7 +304,84 @@ public class Grapher {
 
         return null;
     }
+
+    public class Path {
+        private List<String> nodes;
+
+        public Path() {
+            nodes = new ArrayList<>();
+        }
+
+        public void addNode(String node) {
+            nodes.add(node);
+        }
+
+        public List<String> getNodes() {
+            return nodes;
+        }
+        @Override
+        public String toString() {
+            StringBuilder pathString = new StringBuilder();
+            for (String node : nodes) {
+                pathString.append(node).append(" -> ");
+            }
+            if (pathString.length() > 4) {
+                pathString.setLength(pathString.length() - 4); // Remove the last " -> "
+            }
+            return pathString.toString();
+        }
     }
+    public Path graphSearchDFS(String srcLabel, String dstLabel) {
+        boolean[] visited = new boolean[vertexSet.size()];
+        Stack<String> stack = new Stack<>();
+        Path path = new Path();
+        stack.push(srcLabel);
+
+        while (!stack.isEmpty()) {
+            String current = stack.pop();
+            path.addNode(current);
+
+            if (current.equals(dstLabel)) {
+                return path;
+            }
+
+            int currentIndex = getNodeIndex(current);
+            visited[currentIndex] = true;
+
+            for (String neighbor : adjacencyMap.get(current)) {
+                int neighborIndex = getNodeIndex(neighbor);
+                if (!visited[neighborIndex]) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private int getNodeIndex(String label) {
+        int index = 0;
+        for (String node : vertexSet) {
+            if (node.equals(label)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    public Path graphSearch(String src, String dst, Algorithm algo){
+        if (algo == Algorithm.BFS) {
+            return graphSearchBFS(src,dst);
+        } else if (algo == Algorithm.DFS) {
+            return graphSearchDFS(src,dst);
+        } else {
+            return null;
+        }
+    }
+}
+
+
 
 
 
@@ -343,5 +409,4 @@ public class Grapher {
 //            e.printStackTrace();
 //        }
 //    }
-
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -248,22 +249,52 @@ class GrapherTest {
     @Test
     public void testGraphSearch() throws Exception {
         Grapher grapher = new Grapher();
+
         grapher.parseGraph("src/main/resources/test1.dot");
         grapher.addNode("D");
         grapher.addNode("E");
         grapher.addEdge("A", "D");
         grapher.addEdge("D", "E");
 
-        Grapher.Path path1 = grapher.graphSearch("A", "E");
+        Grapher.Path path1 = grapher.graphSearch("A", "E", Algorithm.BFS);
         assertNotNull(path1);
         assertEquals("A -> D -> E", path1.toString());
-        Grapher.Path path2 = grapher.graphSearch("A", "A");
+        Grapher.Path path2 = grapher.graphSearch("A", "A", Algorithm.BFS);
         assertNotNull(path2);
         assertNotEquals("A -> B -> C -> A", path2.toString());
 
-        Grapher.Path path3 = grapher.graphSearch("A", "Z");
+        Grapher.Path path3 = grapher.graphSearch("A", "Z", Algorithm.BFS);
         assertNull(path3);
+
+        Grapher grapher1 = new Grapher();
+        grapher1.addNode("A");
+        grapher1.addNode("B");
+        grapher1.addNode("C");
+        grapher1.addEdge("A", "B");
+        grapher1.addEdge("B", "C");
+        grapher1.addEdge("C", "A");
+
+
+        Grapher.Path validPath = grapher1.graphSearch("A", "C", Algorithm.DFS);
+        assertNotNull(validPath);
+        assertEquals(List.of("A", "B", "C"), validPath.getNodes());
+
+
+        Grapher.Path invalidPath = grapher1.graphSearch("C", "D", Algorithm.DFS);
+        assertNull(invalidPath);
+
+
+        grapher.addEdge("A", "A");
+        grapher.addEdge("C", "C");
+        Grapher.Path pathWithLoops = grapher1.graphSearch("A", "A", Algorithm.DFS);
+        assertNotNull(pathWithLoops);
+        assertNotEquals(List.of("A", "A"), pathWithLoops.getNodes());
+        grapher.addNode("D");
+        Grapher.Path disconnectedPath = grapher1.graphSearch("A", "D", Algorithm.DFS);
+        assertNull(disconnectedPath);
+
     }
+
 
 }
 
