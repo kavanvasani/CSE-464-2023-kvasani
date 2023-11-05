@@ -259,6 +259,7 @@ class GrapherTest {
         Grapher.Path path1 = grapher.graphSearch("A", "E", Algorithm.BFS);
         assertNotNull(path1);
         assertEquals("A -> D -> E", path1.toString());
+        System.out.println("BFS Traversed : A -> D -> E");
         Grapher.Path path2 = grapher.graphSearch("A", "A", Algorithm.BFS);
         assertNotNull(path2);
         assertNotEquals("A -> B -> C -> A", path2.toString());
@@ -278,8 +279,7 @@ class GrapherTest {
         Grapher.Path validPath = grapher1.graphSearch("A", "C", Algorithm.DFS);
         assertNotNull(validPath);
         assertEquals(List.of("A", "B", "C"), validPath.getNodes());
-
-
+        System.out.println("DFS Traversed: A -> B -> C");
         Grapher.Path invalidPath = grapher1.graphSearch("C", "D", Algorithm.DFS);
         assertNull(invalidPath);
 
