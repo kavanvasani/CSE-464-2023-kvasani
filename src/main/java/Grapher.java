@@ -4,11 +4,11 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.nio.ImportException;
 import java.util.ArrayList;
-import java.util.Collections;
+// import java.util.Collections;
 import java.util.List;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+// import java.nio.file.Path;
 import java.io.StringReader;
 import java.nio.file.Paths;
 
@@ -16,43 +16,43 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import java.util.Set;
+//import java.util.Set;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+//import java.io.IOException;
+//import java.util.HashSet;
+//import java.util.Set;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+//import java.io.IOException;
 import javax.imageio.ImageIO;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.traverse.BreadthFirstIterator;
-import org.jgrapht.traverse.DepthFirstIterator;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+//import org.jgrapht.traverse.BreadthFirstIterator;
+//import org.jgrapht.traverse.DepthFirstIterator;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.awt.*;
+//import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.ArrayDeque;
+//import java.util.Deque;
+//import java.util.HashSet;
+//import java.util.Iterator;
+//import java.util.Set;
 
 
 public class Grapher {
@@ -215,6 +215,7 @@ public class Grapher {
 //    private static org.jgrapht.Graph<String, DefaultEdge> graph; // Your graph representation
 
     public void outputGraphics(String filePath) throws Exception {
+        final String IMAGE_FORMAT = "PNG";
         JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<>(graph);
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         try {
@@ -226,7 +227,7 @@ public class Grapher {
         BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
         File imgFile = new File(filePath);
         try {
-            ImageIO.write(image, "PNG", imgFile);
+            ImageIO.write(image, IMAGE_FORMAT, imgFile);
             System.out.println("Successfully exported graph to image: " + filePath);
         } catch (IOException e) {
             throw new Exception("Error while writing image to file", e);
@@ -321,11 +322,12 @@ public class Grapher {
         }
         @Override
         public String toString() {
+            final int REMOVE_LAST_CHARS = 4;
             StringBuilder pathString = new StringBuilder();
             for (String node : nodes) {
                 pathString.append(node).append(" -> ");
             }
-            if (pathString.length() > 4) {
+            if (pathString.length() > REMOVE_LAST_CHARS) {
                 pathString.setLength(pathString.length() - 4); // Remove the last " -> "
             }
             return pathString.toString();

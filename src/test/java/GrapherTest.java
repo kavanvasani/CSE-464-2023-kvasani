@@ -1,7 +1,7 @@
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
+//import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.junit.jupiter.api.Assertions;
+//import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -99,10 +99,28 @@ class GrapherTest {
             grapher.addNode("A");
             // System.out.println(grapher.toString());
             assertTrue(grapher.toString().contains("A"));
+            grapher.addNode("A");
+            int countOccurrences = countOccurrences(grapher.toString(), "A");
+            assertEquals(1, countOccurrences);
         } catch (Exception e) {
             fail("Exception thrown while adding node: " + e.getMessage());
         }
     }
+    private int countOccurrences(String str, String subStr) {
+        int lastIndex = 0;
+        int count = 0;
+
+        while (lastIndex != -1) {
+            lastIndex = str.indexOf(subStr, lastIndex);
+
+            if (lastIndex != -1) {
+                count++;
+                lastIndex += subStr.length();
+            }
+        }
+        return count;
+    }
+
 
     @Test
     void testAddNodes() {
@@ -112,6 +130,14 @@ class GrapherTest {
             assertTrue(grapher.toString().contains("A"));
             assertTrue(grapher.toString().contains("B"));
             assertTrue(grapher.toString().contains("C"));
+            grapher.addNodes(new String[]{"A", "B", "C"});
+
+            int countOccurrencesA = countOccurrences(grapher.toString(), "A");
+            int countOccurrencesB = countOccurrences(grapher.toString(), "B");
+            int countOccurrencesC = countOccurrences(grapher.toString(), "C");
+            assertEquals(1, countOccurrencesA);
+            assertEquals(1, countOccurrencesB);
+            assertEquals(1, countOccurrencesC);
         } catch (Exception e) {
             fail("Exception thrown while adding nodes: " + e.getMessage());
         }
