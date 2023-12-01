@@ -4,7 +4,10 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.util.*;
-
+/**
+ * The base class for graph search algorithms using the Template Pattern.
+ * It provides a template for graph search algorithms and defines the overall structure of the algorithm.
+ */
 public abstract class GraphSearchTemplate {
 
     public final Graph<String, DefaultEdge> graph;
@@ -15,6 +18,14 @@ public abstract class GraphSearchTemplate {
     }
 
     protected abstract Iterable<DefaultEdge> getEdges(String node);
+
+    /*
+     * The main method representing the template for the graph search algorithm.
+     * It initializes the collection, explores paths, and delegates specific steps to be implemented by subclasses.
+     * @param srcLabel The label of the source node.
+     * @param dstLabel The label of the destination node.
+     * @return The path from the source to the destination, or null if no path is found.
+     */
 
     public Grapher.Path graphSearch(String srcLabel, String dstLabel) {
         LinkedList<Grapher.Path> collection = (LinkedList<Grapher.Path>) createCollection();

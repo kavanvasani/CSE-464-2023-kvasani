@@ -230,6 +230,10 @@ public class Grapher {
     }
     private IGraphSearch strat;
 
+    /*
+     * Sets the graph search strategy.
+     * @param strat The graph search strategy to set.
+     */
     public void setStrat(IGraphSearch strat){
         this.strat = strat;
     }
@@ -266,7 +270,7 @@ public class Grapher {
     public Path graphSearch(String src, String dst) {
         GraphSearchTemplate searchAlgorithm;
 
-
+        // Delegates the graph search to the set strategy.
         return strat.graphSearch(src, dst);
     }
 }
