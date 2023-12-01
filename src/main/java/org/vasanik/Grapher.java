@@ -1,93 +1,58 @@
+package org.vasanik;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.nio.dot.DOTImporter;
 import org.jgrapht.nio.ImportException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.io.StringReader;
-import java.nio.file.Paths;
-
 
 import java.util.*;
-
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
-import java.util.Set;
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.io.StringReader;
+import java.nio.file.Paths;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 import com.mxgraph.layout.mxCircleLayout;
 import com.mxgraph.layout.mxIGraphLayout;
 import com.mxgraph.util.mxCellRenderer;
 import org.jgrapht.ext.JGraphXAdapter;
-import org.jgrapht.traverse.BreadthFirstIterator;
-import org.jgrapht.traverse.DepthFirstIterator;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 
 public class Grapher {
 
 
-
-
-
-    private final Map<String, Set<String>> adjacencyMap = new HashMap<>();
+    public Map<String, Set<String>> adjacencyMap = new HashMap<>();
+    public Set<String> vertexSet = new HashSet<>();
 
     public Graph<String, DefaultEdge> parseGraph(String filePath) throws Exception {
-            try {
-                String fileContent = readDotFile(filePath);
-                return createGraphFromString(fileContent);
-            } catch (IOException | ImportException e) {
-                throw new Exception("Error while parsing graph", e);
-            }
-
+        try {
+            String fileContent = readDotFile(filePath);
+            return createGraphFromString(fileContent);
+        } catch (IOException | ImportException e) {
+            throw new Exception("Error while parsing graph", e);
         }
 
-        private String readDotFile(String filePath) throws IOException {
-            return Files.readString(Paths.get(filePath));
-        }
+    }
 
-        private final Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private String readDotFile(String filePath) throws IOException {
+        return Files.readString(Paths.get(filePath));
+    }
 
-        private Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
+    private final Graph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 
-            DOTImporter<String, DefaultEdge> dotImporter = null;
-            dotImporter = new DOTImporter<>();
-            dotImporter.setVertexFactory(label -> label);
-            dotImporter.importGraph(graph, new StringReader(dotContent));
-            System.out.println("Graph successfully parsed!");
-            return graph;
-        }
+    private Graph<String, DefaultEdge> createGraphFromString(String dotContent) throws ImportException {
+
+        DOTImporter<String, DefaultEdge> dotImporter;
+        dotImporter = new DOTImporter<>();
+        dotImporter.setVertexFactory(label -> label);
+        dotImporter.importGraph(graph, new StringReader(dotContent));
+        System.out.println("Graph successfully parsed!");
+        return graph;
+    }
 
     @Override
     public String toString() {
@@ -105,15 +70,15 @@ public class Grapher {
         output.append("The nodes with the direction of edges: \n");
 
         for (DefaultEdge edge : graph.edgeSet()) {
-            String source = graph.getEdgeSource(edge).toString();
-            String target = graph.getEdgeTarget(edge).toString();
+            String source = graph.getEdgeSource(edge);
+            String target = graph.getEdgeTarget(edge);
             output.append(source).append(" -> ").append(target).append("\n");
         }
         return output.toString();
     }
 
     public void writeToFile(String filePath) throws IOException {
-            String content = toString();
+        String content = toString();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write(content);
             System.out.println("Successfully wrote content to " + filePath);
@@ -121,8 +86,6 @@ public class Grapher {
             throw new IOException("Unable to write content to file: " + filePath, e);
         }
     }
-
-    private Set<String> vertexSet = new HashSet<>();
 
 
     public void addNode(String label) throws Exception {
@@ -149,7 +112,7 @@ public class Grapher {
         }
     }
 
-    private Set<String> EdgesSet = new HashSet<>();
+    private final Set<String> EdgesSet = new HashSet<>();
 
 
     public boolean addEdge(String srcLabel, String dstLabel) throws Exception {
@@ -178,8 +141,8 @@ public class Grapher {
 
     public void outputDOTGraph(String filePath) throws Exception {
         for (DefaultEdge edge : graph.edgeSet()) {
-            String source = graph.getEdgeSource(edge).toString();
-            String target = graph.getEdgeTarget(edge).toString();
+            String source = graph.getEdgeSource(edge);
+            String target = graph.getEdgeTarget(edge);
             if (!EdgesSet.contains(source)) {
                 adjacencyMap.put(source, new HashSet<>());
             }
@@ -210,11 +173,8 @@ public class Grapher {
         }
     }
 
-
-
-//    private static org.jgrapht.Graph<String, DefaultEdge> graph; // Your graph representation
-
     public void outputGraphics(String filePath) throws Exception {
+        final String IMAGE_FORMAT = "PNG";
         JGraphXAdapter<String, DefaultEdge> graphAdapter = new JGraphXAdapter<>(graph);
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
         try {
@@ -226,7 +186,7 @@ public class Grapher {
         BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
         File imgFile = new File(filePath);
         try {
-            ImageIO.write(image, "PNG", imgFile);
+            ImageIO.write(image, IMAGE_FORMAT, imgFile);
             System.out.println("Successfully exported graph to image: " + filePath);
         } catch (IOException e) {
             throw new Exception("Error while writing image to file", e);
@@ -236,11 +196,11 @@ public class Grapher {
     public boolean removeNode(String label) {
         if (graph.containsVertex(label)) {
             System.out.println("Node present in graph");
-                graph.removeVertex(label);
-                return true;
+            graph.removeVertex(label);
+            return true;
         }
-            System.out.println("Node not present in graph");
-            return false;
+        System.out.println("Node not present in graph");
+        return false;
     }
 
 
@@ -267,46 +227,18 @@ public class Grapher {
             throw new Exception("Error while removing edge", e);
         }
 
-
-        }
-
-
-
-
-    public Path graphSearchBFS(String srcLabel, String dstLabel) {
-        Set<String> visited = new HashSet<>();
-        Queue<Path> queue = new LinkedList<>();
-        Path initialPath = new Path();
-        initialPath.addNode(srcLabel);
-        queue.offer(initialPath);
-
-        while (!queue.isEmpty()) {
-            Path currentPath = queue.poll();
-            String currentNode = currentPath.getNodes().get(currentPath.getNodes().size() - 1);
-
-            if (currentNode.equals(dstLabel)) {
-                return currentPath;
-            }
-
-            if (!visited.contains(currentNode)) {
-                visited.add(currentNode);
-                for (DefaultEdge edge : graph.outgoingEdgesOf(currentNode)) {
-                    String neighbor = graph.getEdgeTarget(edge);
-                    if (!visited.contains(neighbor)) {
-                        Path newPath = new Path();
-                        newPath.getNodes().addAll(currentPath.getNodes());
-                        newPath.addNode(neighbor);
-                        queue.offer(newPath);
-                    }
-                }
-            }
-        }
-
-        return null;
     }
+    private IGraphSearch strat;
 
-    public class Path {
-        private List<String> nodes;
+    /*
+     * Sets the graph search strategy.
+     * @param strat The graph search strategy to set.
+     */
+    public void setStrat(IGraphSearch strat){
+        this.strat = strat;
+    }
+    public static class Path {
+        private final List<String> nodes;
 
         public Path() {
             nodes = new ArrayList<>();
@@ -321,92 +253,24 @@ public class Grapher {
         }
         @Override
         public String toString() {
+            final int REMOVE_LAST_CHARS = 4;
             StringBuilder pathString = new StringBuilder();
             for (String node : nodes) {
                 pathString.append(node).append(" -> ");
             }
-            if (pathString.length() > 4) {
-                pathString.setLength(pathString.length() - 4); // Remove the last " -> "
+            if (pathString.length() > REMOVE_LAST_CHARS) {
+                pathString.setLength(pathString.length() - 4);
             }
             return pathString.toString();
         }
     }
-    public Path graphSearchDFS(String srcLabel, String dstLabel) {
-        boolean[] visited = new boolean[vertexSet.size()];
-        Stack<String> stack = new Stack<>();
-        Path path = new Path();
-        stack.push(srcLabel);
 
-        while (!stack.isEmpty()) {
-            String current = stack.pop();
-            path.addNode(current);
 
-            if (current.equals(dstLabel)) {
-                return path;
-            }
 
-            int currentIndex = getNodeIndex(current);
-            visited[currentIndex] = true;
+    public Path graphSearch(String src, String dst) {
+        GraphSearchTemplate searchAlgorithm;
 
-            for (String neighbor : adjacencyMap.get(current)) {
-                int neighborIndex = getNodeIndex(neighbor);
-                if (!visited[neighborIndex]) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private int getNodeIndex(String label) {
-        int index = 0;
-        for (String node : vertexSet) {
-            if (node.equals(label)) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
-    }
-
-    public Path graphSearch(String src, String dst, Algorithm algo){
-        if (algo == Algorithm.BFS) {
-            return graphSearchBFS(src,dst);
-        } else if (algo == Algorithm.DFS) {
-            return graphSearchDFS(src,dst);
-        } else {
-            return null;
-        }
+        // Delegates the graph search to the set strategy.
+        return strat.graphSearch(src, dst);
     }
 }
-
-
-
-
-
-
-//    public static void main(String[] args) throws Exception {
-
-
-//        parseGraph("src/main/resources/test1.dot");
-//        System.out.println(toString());
-//        try {
-//            writeToFile(toString(),"src/main/resources/test1.txt" );
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        addNodes(new String[]{"D", "E"});
-//        System.out.println(toGraphString());
-//
-//        addEdge("D","A");
-//        System.out.println(toString());
-//        outputDOTGraph("src/main/resources/test_dot.dot");
-//        try {
-//            outputGraphics("/Users/kavanvasani/Downloads/cse464/CSE-464-2023-kvasani-asu.edu/src/main/resources/graph.png");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
