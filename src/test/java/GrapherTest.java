@@ -1,10 +1,7 @@
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.junit.jupiter.api.Test;
-import org.vasanik.Algorithm;
-import org.vasanik.BFS;
-import org.vasanik.DFS;
-import org.vasanik.Grapher;
+import org.vasanik.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -328,6 +325,11 @@ class GrapherTest {
         grapher.addNode("D");
         Grapher.Path disconnectedPath = grapher1.graphSearch("A", "D");
         assertNull(disconnectedPath);
+
+        Grapher grapher2 = new Grapher();
+        grapher2.setStrat(new RandomWalk(grapher2.parseGraph("src/main/resources/input2.dot")));
+        Grapher.Path randomWalkPath = grapher2.graphSearch("a", "c");
+        System.out.println(randomWalkPath);
 
     }
 
