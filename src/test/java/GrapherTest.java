@@ -1,8 +1,8 @@
 import org.jgrapht.Graph;
-//import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-//import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.vasanik.Algorithm;
+import org.vasanik.Grapher;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -42,15 +42,17 @@ class GrapherTest {
             grapher.addEdge("A", "B");
             grapher.addEdge("B", "C");
 
-            String expectedGraphString = "The number of nodes are: 3\n" +
-                    "The node labels are: \n" +
-                    "A\n" +
-                    "B\n" +
-                    "C\n" +
-                    "The number of edges are: 2\n" +
-                    "The nodes with the direction of edges: \n" +
-                    "A -> B\n" +
-                    "B -> C\n";
+            String expectedGraphString = """
+                    The number of nodes are: 3
+                    The node labels are:\s
+                    A
+                    B
+                    C
+                    The number of edges are: 2
+                    The nodes with the direction of edges:\s
+                    A -> B
+                    B -> C
+                    """;
 
             String actualGraphString = grapher.toString();
 
@@ -70,16 +72,18 @@ class GrapherTest {
             grapher.addEdge("B", "C");
             grapher.addEdge("C", "A");
 
-            String expectedGraphString = "The number of nodes are: 3\n" +
-                    "The node labels are: \n" +
-                    "A\n" +
-                    "B\n" +
-                    "C\n" +
-                    "The number of edges are: 3\n" +
-                    "The nodes with the direction of edges: \n" +
-                    "A -> B\n" +
-                    "B -> C\n" +
-                    "C -> A\n";
+            String expectedGraphString = """
+                    The number of nodes are: 3
+                    The node labels are:\s
+                    A
+                    B
+                    C
+                    The number of edges are: 3
+                    The nodes with the direction of edges:\s
+                    A -> B
+                    B -> C
+                    C -> A
+                    """;
             grapher.writeToFile("src/main/resources/test2.txt" );
             String actualGraphString = new String(Files.readAllBytes(Paths.get("src/main/resources/test2.txt")));
 
@@ -282,10 +286,11 @@ class GrapherTest {
         grapher.addEdge("A", "D");
         grapher.addEdge("D", "E");
 
-        Grapher.Path path1 = grapher.graphSearch("A", "E", Algorithm.BFS);
+        Grapher.Path path1 = grapher.graphSearch("A", "E", Algorithm.DFS);
         assertNotNull(path1);
         assertEquals("A -> D -> E", path1.toString());
         System.out.println("BFS Traversed : A -> D -> E");
+
         Grapher.Path path2 = grapher.graphSearch("A", "A", Algorithm.BFS);
         assertNotNull(path2);
         assertNotEquals("A -> B -> C -> A", path2.toString());
@@ -309,7 +314,6 @@ class GrapherTest {
         Grapher.Path invalidPath = grapher1.graphSearch("C", "D", Algorithm.DFS);
         assertNull(invalidPath);
 
-
         grapher.addEdge("A", "A");
         grapher.addEdge("C", "C");
         Grapher.Path pathWithLoops = grapher1.graphSearch("A", "A", Algorithm.DFS);
@@ -323,7 +327,3 @@ class GrapherTest {
 
 
 }
-
-
-
-
