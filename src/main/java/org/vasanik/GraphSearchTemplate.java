@@ -45,6 +45,7 @@ public abstract class GraphSearchTemplate {
 
         return null;
     }
+    protected abstract String getAlgorithmName();
 
     protected abstract Collection<Grapher.Path> createCollection();
 

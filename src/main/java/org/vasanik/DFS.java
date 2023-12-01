@@ -6,10 +6,14 @@ import org.jgrapht.graph.DefaultEdge;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class DFS extends GraphSearchTemplate {
+public class DFS extends GraphSearchTemplate implements IGraphSearch{
 
     public DFS(Graph<String, DefaultEdge> graph) {
         super(graph);
+    }
+    @Override
+    protected String getAlgorithmName() {
+        return "DFS";
     }
 
     @Override

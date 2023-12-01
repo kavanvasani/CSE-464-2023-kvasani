@@ -228,7 +228,11 @@ public class Grapher {
         }
 
     }
+    private IGraphSearch strat;
 
+    public void setStrat(IGraphSearch strat){
+        this.strat = strat;
+    }
     public static class Path {
         private final List<String> nodes;
 
@@ -257,24 +261,12 @@ public class Grapher {
         }
     }
 
-    public Path graphSearchBFS(String srcLabel, String dstLabel) {
-        BFS bfs = new BFS(graph);
-        return bfs.graphSearch(srcLabel, dstLabel);
-    }
-
-    public Path graphSearchDFS(String srcLabel, String dstLabel) {
-        DFS dfs = new DFS(graph);
-        return dfs.graphSearch(srcLabel, dstLabel);
-    }
 
 
-    public Path graphSearch(String src, String dst, Algorithm algo){
-        if (algo == Algorithm.BFS) {
-            return graphSearchBFS(src,dst);
-        } else if (algo == Algorithm.DFS) {
-            return graphSearchDFS(src,dst);
-        } else {
-            return null;
-        }
+    public Path graphSearch(String src, String dst) {
+        GraphSearchTemplate searchAlgorithm;
+
+
+        return strat.graphSearch(src, dst);
     }
 }

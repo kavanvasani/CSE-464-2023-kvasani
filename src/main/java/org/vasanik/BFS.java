@@ -4,12 +4,15 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import java.util.LinkedList;
 
-public class BFS extends GraphSearchTemplate {
+public class BFS extends GraphSearchTemplate implements IGraphSearch{
 
     public BFS(Graph<String, DefaultEdge> graph) {
         super(graph);
     }
-
+    @Override
+    protected String getAlgorithmName() {
+        return "BFS";
+    }
     @Override
     protected Iterable<DefaultEdge> getEdges(String node) {
         return graph.outgoingEdgesOf(node);
