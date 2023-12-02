@@ -90,6 +90,16 @@ This Java application, **Grapher**, allows you to parse, manipulate, and visuali
    ```java
    grapher.graphSearch("A", "E", Algorithm.BFS); 
    ```
+12. **Parsing through the graph to get a random path from source to destination**
+   - **Method:** `Grapher.Path randomWalkPath = grapher2.graphSearch("a", "h");`
+   - **Description:** Outputs a random path from source to destination.
+   - **Example:**
+     ```java
+     Grapher grapher2 = new Grapher();
+     grapher2.setStrat(new RandomWalk(grapher2.parseGraph("src/main/resources/input2.dot")));
+     Grapher.Path randomWalkPath = grapher2.graphSearch("a", "h");
+     System.out.println(randomWalkPath);
+     ```
 ### How to Run
 1. Clone the repository - [Link](https://github.com/kavanvasani/CSE-464-2023-kvasani)
 2. **Compile the Code:**
@@ -102,7 +112,29 @@ This Java application, **Grapher**, allows you to parse, manipulate, and visuali
    mvn test
    ```
 
-
+### Refactor branch
+1. Performing 5 refactors
+    * Removing unused imports -  Unused imports have been removed in order to reduce some clutter in the code
+    * Used a variable instead of a direct numerical value - Using the number 4 did not make it clear why 4 was used, giving 4 as a value to a variable helps understand the purpose because of the variable name
+      ![Used a variable instead of a direct numerical value](src/outputs/4refactor.png)
+    * Used a variable instead of a direct value - Using the word PNG might not immediately make it clear why PNG was used, giving PNG as a value to a variable helps understand the purpose because of the variable name
+      ![Used a variable instead of a direct value](src/outputs/PNGrefactor.png)
+    * Modified testAddNode to show it handles duplicate node being added - There was no test case to see how duplicate node was handled in testAddNode
+      ![Modified testAddNode](src/outputs/DuplicateAddNode.png)
+    * Modified testAddNodes to show it handles duplicate nodes being added - There was no test case to see how duplicate nodes were handled in testAddNode
+      ![Modified testAddNodes](src/outputs/DuplicateAddNodes.png)
+2. Implementation of Template pattern
+   * The Template Pattern is a design pattern that defines the skeleton of an algorithm in the superclass but lets subclasses override specific steps of the algorithm without changing its structure.
+   * In this code, the GraphSearchTemplate class is the template. It provides the overall structure of a graph search algorithm but leaves specific steps (like getting edges, creating collections, and getting the next path) to be implemented by subclasses.
+     ![GraphSearchTemplate](src/outputs/GraphSearchTemplate.png)
+   * BFS, DFS and RandomWalk classes extend GraphSearchTemplate, providing implementations for the specific steps needed for Breadth-First Search, Depth-First Search and Random Walk respectively.
+   * BFS uses a queue (LinkedList) for the collection, and DFS uses a stack.
+3. Implementation of Strategy pattern
+   * The Strategy Pattern is a behavioral design pattern that defines a family of algorithms, encapsulates each one, and makes them interchangeable. It allows the client to choose the appropriate algorithm at runtime.
+   * The BFS and DFS classes extend GraphSearchTemplate, providing concrete implementations for the specific steps of Breadth-First Search and Depth-First Search, respectively.
+   * The Grapher class has a member variable strat of type IGraphSearch, which represents the current strategy for graph search.
+   * IGraphSearch interface defines the contract that all graph search algorithms must follow. It has a single method graphSearch for conducting the search and returning a path.
+     ![Implementation of strategy pattern](src/outputs/samplestrategy.png)
 ### Screenshots
 
 - **Parsed Graph Information:**
@@ -136,6 +168,10 @@ This Java application, **Grapher**, allows you to parse, manipulate, and visuali
   ![DFS path from a source node to destination node](src/outputs/DFSpathTraversed.png)
 - **Searching for a path from source node to destination node (merged conflicts):**
   ![Path from source node to destination node](src/outputs/graphSearch.png)
+- **Implementing a random walk path from a source node to destination node**
+  ![Implementing a random walk path from a source node to destination node](src/outputs/randomwalk1.png)
+  ![Demonstration of random walk giving a random path in each iteration](src/outputs/randomwalk2.png)
+
 ### Commits
 
 - [Initial commit](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/09986fa52b53e2495035a9ea8c13edbffee8f4fa)
@@ -152,3 +188,8 @@ This Java application, **Grapher**, allows you to parse, manipulate, and visuali
 - [Added bfs branch](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/c94f33969c96cbfff6bba367a11dea67d612b773)
 - [Added dfs branch](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/d910459fc4d441cf232def1620435946155f3a3c)
 - [Merged conflicts between dfs and bfs branches](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/0770ce964a2b4653d9dc9ea1e20fcd1437f15eed)
+- [Performed 5 refactorings in the code](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/1ef095fb1b5a1584d1ca332e3dd607130a0cb052)
+- [Template pattern added for BFS and DFS](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/4401585d08702e856cb1f3a2909d8ed37e91c854)
+- [Strategy pattern implemented for DFS BFS](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/bcff81a71607766a036c5b9f21d3c375a945e7cd)
+- [Random walk implemented](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/ef9625c268515db63978bd93561ac4b87b7e4f94)
+- [Added comments to explain project structure better](https://github.com/kavanvasani/CSE-464-2023-kvasani/commit/6cf8ae46813bed1036458b48dca8256ca8e1e1c5)
