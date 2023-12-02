@@ -328,7 +328,7 @@ class GrapherTest {
 
         Grapher grapher2 = new Grapher();
         grapher2.setStrat(new RandomWalk(grapher2.parseGraph("src/main/resources/input2.dot")));
-        Grapher.Path randomWalkPath = grapher2.graphSearch("a", "c");
+        Grapher.Path randomWalkPath = grapher2.graphSearch("a", "h");
         System.out.println(randomWalkPath);
 
     }

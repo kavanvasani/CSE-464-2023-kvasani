@@ -4,7 +4,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 
 import java.util.*;
-/**
+/*
  * The base class for graph search algorithms using the Template Pattern.
  * It provides a template for graph search algorithms and defines the overall structure of the algorithm.
  */
